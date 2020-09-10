@@ -6,7 +6,7 @@ from wsgi import app
 app.config['JWT_SECRET_KEY'] = 'super-secrete'
 jwt = JWTManager(app)
 
-jwt_api_v1 = Blueprint('JWT_API_v1', __name__, url_prefix='/api')
+jwt_api_v1 = Blueprint('JWT_API_v1', __name__, url_prefix='/api/v1')
 
 
 @jwt.user_claims_loader
@@ -21,7 +21,7 @@ def add_claims_to_access_token(identity):
     # }
 
 
-@jwt_api_v1.route('/v1/login', methods=['POST'])
+@jwt_api_v1.route('/login', methods=['POST'])
 def login():
     result = dict()
     if not request.is_json:
@@ -40,14 +40,14 @@ def login():
     return jsonify(result, 200)
 
 
-@jwt_api_v1.route('/v1/get_email', methods=['GET'])
+@jwt_api_v1.route('/get_email', methods=['GET'])
 @jwt_required
 def get_email():
     current_user = get_jwt_identity()
     return jsonify(name=current_user), 200
 
 
-@jwt_api_v1.route('/v1/call', methods=['GET'])
+@jwt_api_v1.route('/call', methods=['GET'])
 @jwt_required
 def call():
     current_user = get_jwt_claims()
