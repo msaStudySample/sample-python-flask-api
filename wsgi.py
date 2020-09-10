@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, jsonify, request
+from flask import Flask, request
 from sqlalchemy import create_engine, text
 from extentions import db
 import os
@@ -50,13 +50,15 @@ def configure_extensions(app):
 
 app = create_app()
 
-from app import app_index, user_restapi
-
+from app import app_index
+from api import user_restapi, jwt_api
 
 app.register_blueprint(app_index.bp)
 app.add_url_rule('/', endpoint='idx')
-app.register_blueprint(user_restapi.bp)
-app.add_url_rule('/', endpoint='user')
+app.register_blueprint(user_restapi.api_v1)
+app.add_url_rule('/', endpoint='API_v1')
+app.register_blueprint(jwt_api.jwt_api_v1)
+app.add_url_rule('/', endpoint='JWT_API_v1')
 
 
 if __name__ == '__main__':
