@@ -28,6 +28,8 @@ def create_app():
     database = create_engine(application.config['DB_URL'], encoding='utf-8')
     application.database = database
 
+    CORS(application, supports_credentials=True)
+
     @application.route('/sign-up', methods=['POST'])
     def sign_up():
         user = request.json
