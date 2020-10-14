@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import (JWTManager, jwt_required, jwt_optional, create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies,  get_jwt_identity, get_jwt_claims)
+from flask_jwt_extended import (JWTManager, jwt_required, jwt_optional, create_access_token, get_jwt_identity, get_jwt_claims)
 from wsgi import app
-from models import User
+
 
 app.config['JWT_SECRET_KEY'] = 'super-secrete'
 jwt = JWTManager(app)
@@ -23,7 +23,6 @@ def add_claims_to_access_token(identity):
 
 @jwt_api_v1.route('/login', methods=['POST'])
 def login():
-    from wsgi import bcrypt
     result = dict()
     if not request.is_json:
         result['msg'] = "Missing JSON in request"
@@ -32,31 +31,12 @@ def login():
     email = request.json.get('email', None)
     password = request.json.get('password', None)
 
-    user = User.query.get(email)
-
-    if user is None:
-        result['msg'] = "Please check your email or password."
+    if email != 'test' or password != 'test':
+        result['msg'] = "Bad username or password"
         return jsonify(result), 401
-    else:
-        # TODO checking password == hash password
-        if not bcrypt.check_password_hash(user.password, password):
-            result['msg'] = "Please check your email or password."
-            return jsonify(result), 401
 
-    # if email != 'test' or password != 'test':
-    #     result['msg'] = "Bad username or password"
-    #     return jsonify(result), 401
-
-    # Create the tokens we will be sending back to the user
-    access_token = create_access_token(email)
-    refresh_token = create_refresh_token(email)
-
-    # result['access_token'] = create_access_token(email)
-    result['msg'] = "login success"
-    resp = jsonify({'login': True})
-    set_access_cookies(resp, access_token)
-    set_refresh_cookies(resp, refresh_token)
-
+    result['access_token'] = create_access_token(email)
+    # result = {'access_token': create_access_token(email)}
     return jsonify(result, 200)
 
 

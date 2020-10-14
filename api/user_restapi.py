@@ -2,8 +2,6 @@ from flask import Blueprint, jsonify, request
 from models import User
 from extentions import ma, db
 from models.user import UserSchema
-# from flask_bcrypt import Bcrypt
-# from wsgi import app, bcrypt
 
 
 api_v1 = Blueprint('API_v1', __name__, url_prefix='/api/v1')
@@ -23,7 +21,6 @@ def list_users():
 
 @api_v1.route('/user', methods=['POST'])
 def create_user():
-    from wsgi import bcrypt
     schema = UserSchema()
     result = dict()
 
@@ -36,10 +33,7 @@ def create_user():
             user = User()
             user.email = req_data['email']
             if 'password' in req_data.keys():
-                password = req_data['password']
-
-                pw_hash = bcrypt.generate_password_hash(password)
-                user.password = pw_hash
+                user.password = req_data['password']
             if 'name' in req_data.keys():
                 user.name = req_data['name']
         else:
@@ -53,8 +47,7 @@ def create_user():
     db.session.commit()
 
     result['msg'] = "user created"
-    # result['data'] = schema.dump(user)
-    result['data'] = "OK"
+    result['data'] = schema.dump(user)
 
     return jsonify(result)
 
