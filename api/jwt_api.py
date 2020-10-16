@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import (JWTManager, jwt_required, jwt_optional, create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies,  get_jwt_identity, get_jwt_claims)
+from flask_jwt_extended import (JWTManager, jwt_required, jwt_optional, create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies,  get_jwt_identity, get_jwt_claims, jwt_refresh_token_required, unset_jwt_cookies)
 from wsgi import app
 from models import User
+
 
 app.config['JWT_SECRET_KEY'] = 'super-secrete'
 jwt = JWTManager(app)
@@ -57,7 +58,30 @@ def login():
     set_access_cookies(resp, access_token)
     set_refresh_cookies(resp, refresh_token)
 
-    return jsonify(result, 200)
+    print(resp)
+    print(access_token)
+
+    return resp, 200
+
+
+@jwt_api_v1.route('/token/refresh', methods=['POST'])
+@jwt_refresh_token_required
+def refresh():
+    # Create the new access token
+    current_user = get_jwt_identity()
+    access_token = create_access_token(identity=current_user)
+
+    # Set the JWT access cookie in the response
+    resp = jsonify({'refresh': True})
+    set_access_cookies(resp, access_token)
+    return resp, 200
+
+
+@jwt_api_v1.route('/token/remove', methods=['POST'])
+def logout():
+    resp = jsonify({'logout': True})
+    unset_jwt_cookies(resp)
+    return resp, 200
 
 
 @jwt_api_v1.route('/get_email', methods=['GET'])
