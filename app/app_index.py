@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, render_template
 
 bp = Blueprint('idx', __name__, url_prefix='/')
 
