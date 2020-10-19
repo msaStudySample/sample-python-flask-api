@@ -10,4 +10,6 @@ def idx():
 
     results = dict()
     results['status'] = 'ok'
-    return jsonify(results)
+
+    return render_template('index.html')
+    # return jsonify(results)
