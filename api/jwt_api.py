@@ -49,19 +49,23 @@ def login():
     #     return jsonify(result), 401
 
     # Create the tokens we will be sending back to the user
-    access_token = create_access_token(email)
-    refresh_token = create_refresh_token(email)
+    # access_token = create_access_token(email)
+    # refresh_token = create_refresh_token(email)
 
     # result['access_token'] = create_access_token(email)
     result['msg'] = "login success"
-    resp = jsonify({'login': True})
-    set_access_cookies(resp, access_token)
-    set_refresh_cookies(resp, refresh_token)
+    # resp = jsonify({'login': True})
+    # set_access_cookies(resp, access_token)
+    # set_refresh_cookies(resp, refresh_token)
 
-    print(resp)
+    access_token = create_access_token(email)
+    # print(resp)
     print(access_token)
 
-    return resp, 200
+    result['access_token'] = access_token
+    # result = {'access_token': create_access_token(email)}
+    return jsonify(result, 200)
+    # return resp, 200
 
 
 @jwt_api_v1.route('/token/refresh', methods=['POST'])
@@ -87,6 +91,7 @@ def logout():
 @jwt_api_v1.route('/get_email', methods=['GET'])
 @jwt_required
 def get_email():
+    print("test")
     current_user = get_jwt_identity()
     return jsonify(name=current_user), 200
 
@@ -94,10 +99,10 @@ def get_email():
 @jwt_api_v1.route('/call', methods=['GET'])
 @jwt_required
 def call():
-    current_user = get_jwt_claims()
-    result = dict()
-    result['email'] = current_user['email']
-    result['subject'] = current_user['subject']
-    return jsonify(result, 200)
     # current_user = get_jwt_claims()
-    # return jsonify({'name': current_user['name'], 'subject': current_user['subject']}), 200
+    # result = dict()
+    # result['email'] = current_user['email']
+    # result['subject'] = current_user['subject']
+    # return jsonify(result, 200)
+    current_user = get_jwt_claims()
+    return jsonify({'name': current_user['email'], 'subject': current_user['subject']}), 200
