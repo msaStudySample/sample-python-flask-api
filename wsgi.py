@@ -27,6 +27,7 @@ def create_app():
     CORS(application, supports_credentials=True)
     configure_extensions(application)
 
+    # TODO DB Pool 설정
     database = create_engine(application.config['DB_URL'], encoding='utf-8')
     application.database = database
 

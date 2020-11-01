@@ -12,7 +12,7 @@ DB_URL = f"mysql+mysqlconnector://{db['user']}:{db['password']}@{db['host']}:{db
 SECRET_KEY = 'local key'
 BCRYPT_LEVEL = 10
 
-BASE_URL = 'http://127.0.0.1:8080'
+BASE_URL = 'http://127.0.0.1:8080'  
 
 # JWT_SECRET_KEY = 'local-secret'
 # JWT_TOKEN_LOCATION = ['cookies']
